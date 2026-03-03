@@ -1,0 +1,10 @@
+body{
+    background-color: rgb(170, 0, 255);
+}
+
+h1{
+    text-align: center;
+    color:aliceblue;
+    font-size: 55px;
+    letter-spacing: 15px;
+}
