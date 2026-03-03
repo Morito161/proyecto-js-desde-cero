@@ -19,3 +19,25 @@ console.log(`Luis sera un excelente Desarrollador ${buenDesarrollador}`)
 
 const calificacion = null
 console.log("mi calificacion sera", calificacion, "ya que dependera de mi proyecto", typeof calificacion)
+
+const suma = 10 + 32
+console.log(suma)
+
+const number = "Veinticinco"
+console.log(number, typeof number)
+
+const numero = -666
+console.log(numero, typeof numero)
+
+const number2 = 0
+console.log(number2)
+
+console.log(`"`)
+
+const color = null
+console.log("El color quedara ", color, "ya que no se ha definido aún", typeof color)
+
+const casa = undefined
+console.log(`La casa quedara por el momento ${casa} ya que no se sabe si se incluira o no`, typeof casa)
+
+console.log("false", typeof false)
