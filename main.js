@@ -18,9 +18,9 @@ mostrarDato(carros)
 console.log(carros [4], typeof carros)
 console.log(carros [2], typeof carros [2])
 console.log("Mi carro favorito es el: ", carros [1], typeof carros [1])
-mostrarDato(`Mi carro favorito es el: ${carros [1]} <br><br>`)
+mostrarDato(`Mi carro favorito es el: ${carros [1]}`)
 console.log(`Mi segundo carro favorito es el: ${carros [2]}`)
-mostrarDato(`Mi segundo carro favorito es el: ${carros [2]} <br><br>`)
+mostrarDato(`Mi segundo carro favorito es el: ${carros [2]}`)
 
 //Boolean
 
@@ -58,4 +58,4 @@ const casa = undefined
 console.log(`La casa quedara por el momento ${casa} ya que no se sabe si se incluira o no`, typeof casa)
 
 console.log("false", typeof false)
-mostrarDato("false ", typeof false)
+mostrarDato(`false ${typeof false}`)
