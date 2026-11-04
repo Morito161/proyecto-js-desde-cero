@@ -1,0 +1,61 @@
+name: Safe JavaScript output tests
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax and safe DOM output
+        run: |
+          node --check main.js
+          node <<'JS'
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const js=fs.readFileSync('main.js','utf8');
+          const html=fs.readFileSync('index.html','utf8');
+          assert.ok(!/document\.write\s*\(/.test(js),'document.write is unsafe');
+          assert.ok(js.includes('parrafo.textContent = String(valor)'));
+          assert.ok(html.includes('id="salida-js"'));
+          console.log('Static safety checks passed');
+          JS
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Test examples and HTML injection in Chromium
+        run: |
+          node <<'JS'
+          const {chromium}=require('playwright');
+          const assert=require('node:assert/strict');
+          const path=require('node:path');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            try {
+              const page=await browser.newPage();
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('file://'+path.resolve('index.html'),{waitUntil:'domcontentloaded'});
+              const output=page.locator('#salida-js');
+              const text=await output.innerText();
+              assert.ok(text.includes('my name is luis, como estas'));
+              assert.ok(text.includes('Mi carro favorito es el:'));
+              assert.ok(text.includes('42'));
+              assert.ok(text.includes('false boolean'));
+              assert.deepEqual(errors,[],'JavaScript runtime errors');
+              const payload='<img src=x onerror=alert(1)>';
+              await page.evaluate(value=>mostrarDato(value),payload);
+              assert.equal(await output.locator('p').last().textContent(),payload);
+              assert.equal(await output.locator('img').count(),0,'HTML injection detected');
+              console.log('Browser functionality and XSS regression passed');
+            } finally { await browser.close(); }
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
